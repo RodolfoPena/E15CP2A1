@@ -6,9 +6,10 @@
     <%= link_to 'New History', new_history_path, class: "btn btn-info btn-sm" %>
   </div>
 </div>
-
+<% if user_signed_in? %>
 <div class="row">
-  <% @histories.reverse.each do |history| %>
+  <h1>My histories</h1>
+  <% @my_histories.reverse.each do |history| %>
     <div class="col-sm-6 col-md-4">
       <div class="thumbnail">
         <%= link_to(image_tag(history.picture.thumb), history) if history.picture? %>
@@ -23,7 +24,42 @@
   <% end %>
 </div>
 
-
-<br>
-
-
+<div class="row">
+  <h1> Histories from others </h1>
+  <% @histories.reverse.each do |history| %>
+    <div class="col-sm-6 col-md-4">
+      <div class="thumbnail">
+        <%= link_to(image_tag(history.picture.thumb), history) if history.picture? %>
+        <div class="caption">
+          <h3><%= history.title %></h3>
+          <small><%= time_ago_in_words(history.created_at) %> ago, usuario: <%= history.user_id %></small>
+          <p><%= history.content.truncate(150)  %></p>
+          <% if current_user.admin == true %>
+            <p><%= link_to 'Show', history, class: "btn btn-primary" %> <%= link_to 'Edit', edit_history_path(history), class: "btn btn-warning" %> <%= link_to 'Destroy', history, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %></p>
+          <% else %>
+            <p><%= link_to 'Show', history, class: "btn btn-primary" %> </p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+<% else %>
+<div class="row">
+  <h1> Histories from others </h1>
+  <% @histories.reverse.each do |history| %>
+    <div class="col-sm-6 col-md-4">
+      <div class="thumbnail">
+        <%= link_to(image_tag(history.picture.thumb), history) if history.picture? %>
+        <div class="caption">
+          <h3><%= history.title %></h3>
+          <small><%= time_ago_in_words(history.created_at) %> ago, usuario: <%= history.user_id %></small>
+          <p><%= history.content.truncate(150)  %></p>
+          <p>
+            <%= link_to 'Show', history, class: "btn btn-primary" %></p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+<% end %>
